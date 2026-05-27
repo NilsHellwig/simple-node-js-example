@@ -1,75 +1,92 @@
-// Importieren der benötigten Module
-import express from "express"; 
-import fs from "fs"; // Dateisystem-Modul, um mit Dateien zu arbeiten
-import cors from "cors"; 
+/**
+ * Simple Node.js Backend Example
+ *
+ * This project demonstrates a basic REST API using Express.
+ * It allows reading, creating, updating, and deleting entries
+ * stored in a local JSON file (db.json).
+ */
 
-const app = express(); // Initialisieren der Express-Anwendung
-const PORT = 3000; // Port, auf dem der Server laufen soll
-const DB_FILE = "db.json"; // Datei, in der die Daten gespeichert werden
+import express from "express";
+import fs from "fs";
+import cors from "cors";
 
-// Middleware aktivieren:
-// Erlaubt Cross-Origin-Zugriffe aller Frontend-Clients
-app.use(cors());
-// Erlaubt das Parsen von JSON-Daten im Body von Anfragen mit application/json
+const app = express();
+const PORT = 3000;
+const DB_FILE = "db.json";
+
+// Standard CORS configuration
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
+
+// Middleware to parse JSON request bodies
 app.use(express.json());
 
 /**
- * Liest den Inhalt der Datenbankdatei (db.json) und gibt das geparste JSON zurück.
+ * Reads the current database from the JSON file.
+ * @returns {Array} The list of items.
  */
 function readDB() {
+  // fs.readFileSync returns a string ("utf-8").
+  // JSON.parse expects a String and converts this JSON-formatted string into a JavaScript object.
   return JSON.parse(fs.readFileSync(DB_FILE, "utf-8"));
 }
 
 /**
- * Schreibt die übergebenen Daten als formatiertes JSON in die Datenbankdatei.
- * @param {Array} data - Die zu speichernden Daten
+ * Writes the given data back to the JSON file.
+ * @param {Array} data - The list of items to save.
  */
 function writeDB(data) {
+  // JSON.stringify converts an object to a string.
+  // The second argument (replacer) is null, meaning all properties are included without any transformation.
+  // The '2' parameter defines the indentation (2 spaces) for better readability.
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-// GET-Endpunkt: Gibt alle Items zurück
+// GET route: Returns all items
 app.get("/items", (req, res) => {
-  res.json(readDB()); // Antwort ist der Inhalt der Datenbank
+  res.status(200).json(readDB());
 });
 
-// POST-Endpunkt: Fügt ein neues Item hinzu
+// POST route: Adds a new item
 app.post("/items", (req, res) => {
-  const data = readDB(); // Aktuelle Daten aus der Datei lesen
-  data.push(req.body); // Neues Item hinzufügen
-  writeDB(data); // Daten zurück in die Datei schreiben
-  res.status(201).json({ message: "Item added" }); // Erfolgsantwort
+  const data = readDB();
+  data.push(req.body);
+  writeDB(data);
+  res.status(201).json({ message: "Item successfully added" });
 });
 
-// PUT-Endpunkt: Aktualisiert ein bestehendes Item anhand seiner ID (Index in der Liste)
+// PUT route: Updates an existing item by its index (ID)
 app.put("/items/:id", (req, res) => {
-  const data = readDB(); // Aktuelle Daten lesen
-  const id = parseInt(req.params.id); // ID aus der URL holen und in Zahl umwandeln
+  const data = readDB();
+  const id = parseInt(req.params.id);
 
   if (data[id]) {
-    data[id] = req.body; // Item an der Stelle ersetzen
-    writeDB(data); // Geänderte Daten speichern
-    res.json({ message: "Item updated" }); // Erfolgsantwort
+    data[id] = req.body;
+    writeDB(data);
+    res.status(200).json({ message: "Item successfully updated" });
   } else {
-    res.status(404).json({ message: "Item not found" }); // Fehler, wenn ID ungültig
+    res.status(404).json({ message: "Item not found" });
   }
 });
 
-// DELETE-Endpunkt: Löscht ein Item anhand seiner ID (Index)
+// DELETE route: Deletes an item by its index (ID)
 app.delete("/items/:id", (req, res) => {
-  const data = readDB(); // Daten lesen
-  const id = parseInt(req.params.id); // ID aus URL extrahieren
+  const data = readDB();
+  const id = parseInt(req.params.id);
 
   if (data[id]) {
-    data.splice(id, 1); // Eintrag an Position ID entfernen
-    writeDB(data); // Datei aktualisieren
-    res.json({ message: "Item deleted" }); // Erfolgsantwort
+    data.splice(id, 1);
+    writeDB(data);
+    res.status(200).json({ message: "Item successfully deleted" });
   } else {
-    res.status(404).json({ message: "Item not found" }); // Fehlerantwort
+    res.status(404).json({ message: "Item not found" });
   }
 });
 
-// Startet den Server auf dem angegebenen Port
+// Start the server on the defined port
 app.listen(PORT, () => {
-  console.log(`Server läuft auf http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

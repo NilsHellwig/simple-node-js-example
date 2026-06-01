@@ -11,7 +11,7 @@ import fs from "fs";
 import cors from "cors";
 
 const app = express();
-const PORT = 3000;
+const PORT = 3334;
 const DB_FILE = "db.json";
 
 // Standard CORS configuration

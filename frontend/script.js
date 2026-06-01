@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:3000/items";
+const apiUrl = "http://localhost:3334/items";
 
 // Funktion zum Abrufen und Anzeigen aller Items
 function fetchItems() {

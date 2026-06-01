@@ -1,17 +1,36 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
   <head>
     <meta charset="UTF-8" />
-    <title>Simple CRUD</title>
+    <meta name="viewport" />
+    <link rel="stylesheet" href="css/fonts.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <title>To-Do App</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
   </head>
   <body>
-    <h1>Einträge</h1>
-    <ul id="itemList"></ul>
-
-    <h2>Neues Element hinzufügen</h2>
-    <input type="text" id="newItem" placeholder="Neues Item" />
-    <button onclick="addItem()">Hinzufügen</button>
-
-    <script src="script.js"></script>
+    <header>
+      <div id="logo">
+        <img src="img/logo.svg" alt="To-Do App Logo" />
+        <h1>To-Do App</h1>
+      </div>
+      <form id="new-task-form">
+        <input type="text" id="new-task-input" placeholder="What are you planning?" name="task-input" />
+        <input type="submit" id="new-task-submit" value="Add task" />
+      </form>
+    </header>
+    <main>
+      <h2>Tasks</h2>
+      <div id="tasks">
+        <!-- <div class="task">
+          <input type="text" class="text" value="Example task"  />
+          <div class="task-actions">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </div>
+        </div>  -->
+      </div>
+    </main>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>

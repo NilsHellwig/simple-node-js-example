@@ -29,8 +29,8 @@ app.use(express.json());
  * @returns {Array} The list of items.
  */
 function readDB() {
-  // fs.readFileSync returns a string ("utf-8").
-  // JSON.parse expects a String and converts this JSON-formatted string into a JavaScript object.
+  // fs.readFileSync returns a string ("utf-8")
+  // JSON.parse converts the JSON string into a JavaScript object
   return JSON.parse(fs.readFileSync(DB_FILE, "utf-8"));
 }
 
@@ -40,49 +40,48 @@ function readDB() {
  */
 function writeDB(data) {
   // JSON.stringify converts an object to a string.
-  // The second argument (replacer) is null, meaning all properties are included without any transformation.
   // The '2' parameter defines the indentation (2 spaces) for better readability.
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-// GET route: Returns all items
-app.get("/items", (req, res) => {
+// GET route: Returns all tasks
+app.get("/tasks", (req, res) => {
   res.status(200).json(readDB());
 });
 
-// POST route: Adds a new item
-app.post("/items", (req, res) => {
+// POST route: Adds a new task
+app.post("/tasks", (req, res) => {
   const data = readDB();
   data.push(req.body);
   writeDB(data);
-  res.status(201).json({ message: "Item successfully added" });
+  res.status(201).json({ message: "Task successfully added" });
 });
 
-// PUT route: Updates an existing item by its index (ID)
-app.put("/items/:id", (req, res) => {
+// PUT route: Updates an existing task by its index
+app.put("/tasks/:id", (req, res) => {
   const data = readDB();
   const id = parseInt(req.params.id);
 
   if (data[id]) {
     data[id] = req.body;
     writeDB(data);
-    res.status(200).json({ message: "Item successfully updated" });
+    res.status(200).json({ message: "Task successfully updated" });
   } else {
-    res.status(404).json({ message: "Item not found" });
+    res.status(404).json({ message: "Task not found" });
   }
 });
 
-// DELETE route: Deletes an item by its index (ID)
-app.delete("/items/:id", (req, res) => {
+// DELETE route: Deletes a task by its index
+app.delete("/tasks/:id", (req, res) => {
   const data = readDB();
   const id = parseInt(req.params.id);
 
   if (data[id]) {
     data.splice(id, 1);
     writeDB(data);
-    res.status(200).json({ message: "Item successfully deleted" });
+    res.status(200).json({ message: "Task successfully deleted" });
   } else {
-    res.status(404).json({ message: "Item not found" });
+    res.status(404).json({ message: "Task not found" });
   }
 });
 

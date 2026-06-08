@@ -16,7 +16,7 @@ export async function getTasks() {
 export async function createTask(task) {
   const response = await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }, // This header tells the server that the request body is in JSON format.
     body: JSON.stringify(task),
   });
   if (!response.ok) throw new Error("Failed to create task");
